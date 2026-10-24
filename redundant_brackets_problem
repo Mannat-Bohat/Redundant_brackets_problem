@@ -1,0 +1,60 @@
+#include <iostream>
+#include <stack>
+#include <string>
+
+using namespace std;
+
+bool findRedundantBrackets(string &s)
+{
+    stack<char> st;
+    for(int i=0; i<s.length(); i++) {
+        char ch = s[i];
+        
+        if(ch == '(' || ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+            st.push(ch);
+        }
+        else
+        {
+            // ch is either ')' or a lowercase letter
+            if(ch == ')') {
+                bool isRedundant = true;
+                
+                // Check if there is any operator between '(' and ')'
+                while(st.top() != '(') {
+                    char top = st.top();
+                    if(top == '+' || top == '-' || top == '*' || top == '/') {
+                        isRedundant = false;
+                    }
+                    st.pop();
+                } // <-- FIXED: Added missing closing brace for the while loop
+                
+                // If no operator was found, the brackets are redundant
+                if(isRedundant == true)
+                    return true;
+                
+                st.pop(); // Pop the opening bracket '('
+            }
+        }
+    }
+    return false;
+}
+
+int main(){
+    // Test case 1: Redundant brackets present around (a+b)
+    string str1 = "((a+b))";
+    if (findRedundantBrackets(str1)) {
+        cout << str1 << " contains redundant brackets." << endl;
+    } else {
+        cout << str1 << " does not contain redundant brackets." << endl;
+    }
+
+    // Test case 2: No redundant brackets
+    string str2 = "(a+(b*c))";
+    if (findRedundantBrackets(str2)) {
+        cout << str2 << " contains redundant brackets." << endl;
+    } else {
+        cout << str2 << " does not contain redundant brackets." << endl;
+    }
+
+    return 0;
+}
